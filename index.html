@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSBiA - Compactador Seguro AES-256</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="header-container">
+                <div class="logo">BSBiA</div>
+                <div>
+                    <h1>Compactador Seguro AES-256</h1>
+                    <p>Criptografia real | Funciona offline | 100% JavaScript</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <!-- Upload Area -->
+                <div class="card">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📦</div>
+                        <h3>Selecione seus arquivos</h3>
+                        <p>Arraste e solte ou clique para escolher</p>
+                        <small>Suporta múltiplos arquivos | Funciona offline</small>
+                        <input type="file" id="fileInput" multiple style="display: none">
+                    </div>
+                    
+                    <div id="fileList" class="file-list"></div>
+                </div>
+
+                <!-- Configurações -->
+                <div class="card">
+                    <div class="form-group">
+                        <label>🔒 Senha de Proteção (AES-256)</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" placeholder="Digite sua senha" class="input">
+                            <button class="btn-icon" id="togglePassword">👁️</button>
+                            <button class="btn-icon" id="generatePassword">🎲</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>📝 Nome do arquivo (opcional)</label>
+                        <input type="text" id="outputName" placeholder="ex: meus_documentos" class="input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>⚡ Nível de Compressão</label>
+                        <input type="range" id="compressionLevel" min="1" max="9" value="5" class="slider">
+                        <div class="slider-labels">
+                            <span>Mais Rápido</span>
+                            <span>Equilibrado</span>
+                            <span>Mais Compacto</span>
+                        </div>
+                    </div>
+
+                    <button id="compactBtn" class="btn-primary" disabled>
+                        🔒 Compactar com Criptografia AES-256
+                    </button>
+                </div>
+
+                <!-- Progresso -->
+                <div id="progressCard" class="card" style="display: none;">
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                        <p id="progressText" class="progress-text">Processando...</p>
+                    </div>
+                </div>
+
+                <!-- Resultado -->
+                <div id="resultCard" class="card" style="display: none;">
+                    <div class="result-header">
+                        <span class="result-icon">✅</span>
+                        <h3>Arquivo Criptografado com Sucesso!</h3>
+                    </div>
+                    <div class="result-info">
+                        <div class="result-row">
+                            <strong>Arquivo:</strong>
+                            <span id="resultFilename"></span>
+                        </div>
+                        <div class="result-row">
+                            <strong>Senha:</strong>
+                            <span id="resultPassword" class="password-display"></span>
+                            <button id="copyPassword" class="btn-copy">Copiar</button>
+                        </div>
+                        <div class="result-row">
+                            <strong>Tamanho Original:</strong>
+                            <span id="originalSize"></span>
+                        </div>
+                        <div class="result-row">
+                            <strong>Tamanho Compactado:</strong>
+                            <span id="compressedSize"></span>
+                        </div>
+                    </div>
+                    <div class="security-badge">
+                        🔐 Protegido com AES-256 (Criptografia Militar)
+                    </div>
+                    <div class="result-actions">
+                        <button id="downloadBtn" class="btn-download">⬇️ Download do Arquivo Seguro</button>
+                        <button id="newFileBtn" class="btn-secondary">🔄 Compactar Outros Arquivos</button>
+                    </div>
+                </div>
+
+                <!-- Aviso de Segurança -->
+                <div class="card security-card">
+                    <div class="security-info">
+                        <span class="security-icon">🔒</span>
+                        <div>
+                            <h4>Criptografia AES-256</h4>
+                            <p>Seus arquivos são criptografados localmente no seu navegador. Nenhum dado é enviado para servidores.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>🔒 BSBiA Secure Compressor | Criptografia AES-256 | 100% JavaScript</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
