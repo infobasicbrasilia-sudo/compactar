@@ -42,8 +42,11 @@
                         <label>🔒 Senha de Proteção (AES-256)</label>
                         <div class="password-wrapper">
                             <input type="password" id="password" placeholder="Digite sua senha" class="input">
-                            <button class="btn-icon" id="togglePassword">👁️</button>
-                            <button class="btn-icon" id="generatePassword">🎲</button>
+                            <!-- Adicione data-tooltip aos botões -->
+<button class="btn-icon" id="togglePassword" data-tooltip="Mostrar/ocultar senha">👁️</button>
+<button class="btn-icon" id="generatePassword" data-tooltip="Gerar senha aleatória">🎲</button>
+
+<!-- Adicione classe loading dinamicamente via JS quando estiver processando -->
                         </div>
                     </div>
 
