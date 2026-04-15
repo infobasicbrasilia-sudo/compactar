@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BSBiA - Proteção REAL de Arquivos</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <title>BSBiA - ZIP com Senha</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -22,7 +20,6 @@
             margin: 0 auto 15px; font-size: 24px; font-weight: bold; color: #667eea;
         }
         .header h1 { font-size: 1.8rem; margin-bottom: 5px; }
-        .header p { opacity: 0.9; }
         .card {
             background: white; border-radius: 20px; padding: 25px;
             margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -40,71 +37,42 @@
             border-radius: 10px; display: flex; justify-content: space-between;
             align-items: center;
         }
-        .remove-file { color: red; cursor: pointer; font-weight: bold; padding: 0 10px; }
+        .remove-file { color: red; cursor: pointer; }
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #333; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
         .password-wrapper { display: flex; gap: 10px; }
-        input[type="password"], input[type="text"] {
-            flex: 1; padding: 12px; border: 1px solid #ddd;
-            border-radius: 10px; font-size: 14px;
-        }
-        .btn-icon {
-            padding: 0 15px; background: #f0f0f0; border: 1px solid #ddd;
-            border-radius: 10px; cursor: pointer;
-        }
+        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 10px; }
+        .btn-icon { padding: 0 15px; background: #f0f0f0; border: none; border-radius: 10px; cursor: pointer; }
         .btn-primary {
             width: 100%; padding: 15px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white; border: none; border-radius: 12px;
             font-size: 16px; font-weight: bold; cursor: pointer;
-            transition: transform 0.2s;
         }
-        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
         .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-        .progress-bar {
-            width: 100%; height: 30px; background: #f0f0f0;
-            border-radius: 15px; overflow: hidden; margin: 10px 0;
-        }
-        .progress-fill {
-            width: 0%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.3s; display: flex; align-items: center;
-            justify-content: center; color: white; font-size: 12px;
-        }
+        .progress-bar { width: 100%; height: 30px; background: #f0f0f0; border-radius: 15px; overflow: hidden; margin: 10px 0; }
+        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; }
         .result-info { background: #f5f5f5; padding: 15px; border-radius: 12px; margin: 15px 0; }
-        .result-row { display: flex; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
-        .password-display { font-family: monospace; background: white; padding: 5px 10px; border-radius: 8px; }
-        .result-actions { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-download, .btn-secondary {
-            flex: 1; padding: 12px; border: none; border-radius: 10px;
-            font-weight: bold; cursor: pointer;
-        }
-        .btn-download { background: #10b981; color: white; }
-        .btn-secondary { background: #6b7280; color: white; }
-        .security-badge {
-            background: #d1fae5; padding: 12px; border-radius: 12px;
-            text-align: center; margin: 15px 0;
-        }
-        .footer { text-align: center; color: white; margin-top: 20px; font-size: 12px; opacity: 0.8; }
-        @media (max-width: 600px) {
-            .card { padding: 15px; }
-            .result-row { flex-direction: column; }
-            .result-actions { flex-direction: column; }
-        }
+        .result-row { display: flex; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; }
+        .result-actions { display: flex; gap: 10px; }
+        .btn-download { flex: 1; padding: 12px; background: #10b981; color: white; border: none; border-radius: 10px; cursor: pointer; }
+        .btn-secondary { flex: 1; padding: 12px; background: #6b7280; color: white; border: none; border-radius: 10px; cursor: pointer; }
+        .footer { text-align: center; color: white; margin-top: 20px; font-size: 12px; }
+        @media (max-width: 600px) { .card { padding: 15px; } .result-actions { flex-direction: column; } }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">🔒</div>
-            <h1>BSBiA - Proteção de Arquivos</h1>
-            <p>Criptografia AES-256 | Arquivos protegidos por senha</p>
+            <div class="logo">📦</div>
+            <h1>BSBiA - ZIP com Senha</h1>
+            <p>Arquivos protegidos - O ZIP só abre com a senha</p>
         </div>
 
         <div class="card">
             <div class="upload-area" id="uploadArea">
                 <div class="upload-icon">📁</div>
-                <h3>Clique ou arraste arquivos aqui</h3>
-                <p>Selecione um ou mais arquivos</p>
+                <h3>Clique ou arraste arquivos</h3>
                 <input type="file" id="fileInput" multiple style="display: none">
             </div>
             <div id="fileList" class="file-list"></div>
@@ -112,74 +80,46 @@
 
         <div class="card">
             <div class="form-group">
-                <label>🔒 Senha (obrigatória)</label>
+                <label>🔒 Senha do ZIP</label>
                 <div class="password-wrapper">
-                    <input type="password" id="password" placeholder="Digite a senha para proteger os arquivos">
+                    <input type="password" id="password" placeholder="Digite a senha">
                     <button class="btn-icon" id="togglePassword">👁️</button>
                     <button class="btn-icon" id="generatePassword">🎲</button>
                 </div>
             </div>
             <div class="form-group">
-                <label>📝 Nome do arquivo</label>
-                <input type="text" id="outputName" placeholder="meus_arquivos_protegidos">
+                <label>📝 Nome do ZIP</label>
+                <input type="text" id="outputName" placeholder="meu_arquivo">
             </div>
-            <button id="compactBtn" class="btn-primary" disabled>🔒 Criptografar e Proteger</button>
+            <button id="compactBtn" class="btn-primary" disabled>📦 Criar ZIP Protegido</button>
         </div>
 
         <div id="progressCard" class="card" style="display: none;">
-            <div class="progress-bar">
-                <div id="progressFill" class="progress-fill">0%</div>
-            </div>
-            <p id="progressText" style="text-align: center; color: #666;">Processando...</p>
+            <div class="progress-bar"><div id="progressFill" class="progress-fill">0%</div></div>
+            <p id="progressText" style="text-align: center;">Enviando...</p>
         </div>
 
         <div id="resultCard" class="card" style="display: none;">
-            <h3 style="color: #10b981; text-align: center;">✅ Arquivo Protegido!</h3>
+            <h3 style="color: #10b981;">✅ ZIP Criado!</h3>
             <div class="result-info">
-                <div class="result-row">
-                    <strong>Arquivo:</strong>
-                    <span id="resultFilename"></span>
-                </div>
-                <div class="result-row">
-                    <strong>Senha:</strong>
-                    <span id="resultPassword" class="password-display"></span>
-                    <button id="copyPassword" class="btn-icon">Copiar</button>
-                </div>
-                <div class="result-row">
-                    <strong>Tamanho:</strong>
-                    <span id="resultSize"></span>
-                </div>
-            </div>
-            <div class="security-badge">
-                🔐 Este arquivo está CRIPTOGRAFADO! Só abre com a senha correta.
+                <div class="result-row"><strong>Arquivo:</strong><span id="resultFilename"></span></div>
+                <div class="result-row"><strong>Senha:</strong><span id="resultPassword"></span><button id="copyPassword" class="btn-icon">Copiar</button></div>
+                <div class="result-row"><strong>Tamanho:</strong><span id="resultSize"></span></div>
             </div>
             <div class="result-actions">
-                <button id="downloadBtn" class="btn-download">⬇️ Baixar Arquivo Protegido</button>
+                <button id="downloadBtn" class="btn-download">⬇️ Baixar ZIP</button>
                 <button id="newFileBtn" class="btn-secondary">🔄 Novo</button>
             </div>
         </div>
 
-        <div class="card">
-            <h3 style="margin-bottom: 15px;">🔓 Descriptografar Arquivo</h3>
-            <input type="file" id="decryptFileInput" accept=".bsbia" style="margin-bottom: 10px;">
-            <input type="password" id="decryptPassword" placeholder="Digite a senha" style="width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd;">
-            <button id="decryptBtn" class="btn-primary" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🔓 Descriptografar</button>
-            <div id="decryptResult" style="margin-top: 15px; display: none;">
-                <div class="security-badge" style="background: #d1fae5;">
-                    <a id="downloadDecrypted" href="#" style="color: #065f46; text-decoration: none; font-weight: bold;">⬇️ Clique aqui para baixar o arquivo descriptografado</a>
-                </div>
-            </div>
-        </div>
-
         <div class="footer">
-            <p>BSBiA | Criptografia AES-256 | Arquivos protegidos por senha</p>
+            <p>BSBiA | O arquivo ZIP exige senha para ser aberto</p>
         </div>
     </div>
 
     <script>
         let selectedFiles = [];
         let isProcessing = false;
-        let encryptedBlob = null;
 
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
@@ -193,11 +133,6 @@
         const resultCard = document.getElementById('resultCard');
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
-        const decryptFileInput = document.getElementById('decryptFileInput');
-        const decryptPassword = document.getElementById('decryptPassword');
-        const decryptBtn = document.getElementById('decryptBtn');
-        const decryptResult = document.getElementById('decryptResult');
-        const downloadDecrypted = document.getElementById('downloadDecrypted');
 
         function formatBytes(bytes) {
             if (bytes === 0) return '0 Bytes';
@@ -208,23 +143,16 @@
         }
 
         function generateRandomPassword() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let password = '';
-            for (let i = 0; i < 12; i++) {
-                password += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
+            for (let i = 0; i < 8; i++) password += chars.charAt(Math.floor(Math.random() * chars.length));
             return password;
         }
 
         function showNotification(msg, type = 'success') {
             const div = document.createElement('div');
             div.textContent = msg;
-            div.style.cssText = `
-                position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-                background: ${type === 'error' ? '#ef4444' : '#10b981'};
-                color: white; padding: 10px 20px; border-radius: 50px;
-                z-index: 1000; font-size: 14px;
-            `;
+            div.style.cssText = `position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: ${type === 'error' ? '#ef4444' : '#10b981'}; color: white; padding: 10px 20px; border-radius: 50px; z-index: 1000;`;
             document.body.appendChild(div);
             setTimeout(() => div.remove(), 3000);
         }
@@ -251,19 +179,16 @@
             compactBtn.disabled = selectedFiles.length === 0;
         }
 
-        // CRIPTOGRAFAR
-        async function encryptFiles() {
+        async function createZip() {
             if (selectedFiles.length === 0) {
                 showNotification('Selecione arquivos!', 'error');
                 return;
             }
-            
             const password = passwordInput.value;
             if (!password) {
                 showNotification('Digite uma senha!', 'error');
                 return;
             }
-            
             if (isProcessing) return;
             isProcessing = true;
             compactBtn.disabled = true;
@@ -279,128 +204,62 @@
             }, 200);
             
             try {
-                // 1. Criar ZIP com todos os arquivos
-                const zip = new JSZip();
-                for (const file of selectedFiles) {
-                    const content = await file.arrayBuffer();
-                    zip.file(file.name, content);
-                }
+                const formData = new FormData();
+                selectedFiles.forEach(file => formData.append('arquivos', file));
+                formData.append('senha', password);
+                formData.append('nome_saida', outputNameInput.value);
                 
-                progressText.textContent = 'Compactando arquivos...';
-                const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
-                
-                // 2. Converter para Base64
-                progressText.textContent = 'Preparando para criptografia...';
-                const zipBase64 = await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result.split(',')[1]);
-                    reader.readAsDataURL(zipBlob);
+                progressText.textContent = 'Enviando para o servidor...';
+                const response = await fetch('http://localhost:5000/compactar', {
+                    method: 'POST',
+                    body: formData
                 });
                 
-                // 3. Criptografar com AES
-                progressText.textContent = 'Aplicando criptografia AES-256...';
-                const encrypted = CryptoJS.AES.encrypt(zipBase64, password).toString();
-                encryptedBlob = new Blob([encrypted], { type: 'application/octet-stream' });
+                const data = await response.json();
                 
                 clearInterval(interval);
                 progressFill.style.width = '100%';
                 progressFill.textContent = '100%';
                 progressText.textContent = 'Concluído!';
                 
-                setTimeout(() => {
-                    progressCard.style.display = 'none';
-                    
-                    const timestamp = Date.now();
-                    const nome = outputNameInput.value || 'protegido';
-                    const filename = `${nome}_${timestamp}.bsbia`;
-                    
-                    document.getElementById('resultFilename').textContent = filename;
-                    document.getElementById('resultPassword').textContent = password;
-                    document.getElementById('resultSize').textContent = formatBytes(encryptedBlob.size);
-                    resultCard.style.display = 'block';
-                    
-                    showNotification('✅ Arquivo criptografado! Só abre com a senha.');
-                    
-                    document.getElementById('downloadBtn').onclick = () => {
-                        const url = URL.createObjectURL(encryptedBlob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = filename;
-                        a.click();
-                        URL.revokeObjectURL(url);
-                    };
-                    
-                    document.getElementById('newFileBtn').onclick = () => {
-                        selectedFiles = [];
-                        updateFileList();
-                        passwordInput.value = '';
-                        outputNameInput.value = '';
-                        resultCard.style.display = 'none';
-                        compactBtn.disabled = true;
-                    };
-                    
-                    document.getElementById('copyPassword').onclick = () => {
-                        navigator.clipboard.writeText(password);
-                        showNotification('Senha copiada!');
-                    };
-                }, 500);
-                
+                if (data.success) {
+                    setTimeout(() => {
+                        progressCard.style.display = 'none';
+                        document.getElementById('resultFilename').textContent = data.arquivo;
+                        document.getElementById('resultPassword').textContent = data.senha;
+                        document.getElementById('resultSize').textContent = data.tamanho;
+                        resultCard.style.display = 'block';
+                        showNotification('✅ ZIP criado! O arquivo exige senha para abrir.');
+                        
+                        document.getElementById('downloadBtn').onclick = () => {
+                            window.location.href = `http://localhost:5000${data.download_url}`;
+                        };
+                        document.getElementById('newFileBtn').onclick = () => {
+                            selectedFiles = [];
+                            updateFileList();
+                            passwordInput.value = '';
+                            outputNameInput.value = '';
+                            resultCard.style.display = 'none';
+                            compactBtn.disabled = true;
+                        };
+                        document.getElementById('copyPassword').onclick = () => {
+                            navigator.clipboard.writeText(data.senha);
+                            showNotification('Senha copiada!');
+                        };
+                    }, 500);
+                } else {
+                    throw new Error(data.error);
+                }
             } catch (err) {
                 clearInterval(interval);
                 progressCard.style.display = 'none';
-                showNotification('Erro: ' + err.message, 'error');
+                showNotification('Erro: ' + err.message + '. Verifique se o servidor está rodando.', 'error');
             } finally {
                 isProcessing = false;
                 compactBtn.disabled = selectedFiles.length === 0;
             }
         }
 
-        // DESCRIPTOGRAFAR
-        decryptBtn.onclick = async () => {
-            const file = decryptFileInput.files[0];
-            const password = decryptPassword.value;
-            
-            if (!file) {
-                showNotification('Selecione um arquivo .bsbia!', 'error');
-                return;
-            }
-            if (!password) {
-                showNotification('Digite a senha!', 'error');
-                return;
-            }
-            
-            showNotification('Descriptografando...', 'success');
-            
-            try {
-                const encryptedText = await file.text();
-                const decrypted = CryptoJS.AES.decrypt(encryptedText, password).toString(CryptoJS.enc.Utf8);
-                
-                if (!decrypted || decrypted.length === 0) {
-                    throw new Error('Senha incorreta');
-                }
-                
-                const binaryString = atob(decrypted);
-                const bytes = new Uint8Array(binaryString.length);
-                for (let i = 0; i < binaryString.length; i++) {
-                    bytes[i] = binaryString.charCodeAt(i);
-                }
-                
-                const zipBlob = new Blob([bytes], { type: 'application/zip' });
-                const url = URL.createObjectURL(zipBlob);
-                
-                downloadDecrypted.href = url;
-                downloadDecrypted.download = file.name.replace('.bsbia', '.zip');
-                decryptResult.style.display = 'block';
-                
-                showNotification('✅ Descriptografado! Clique no link para baixar.');
-                
-            } catch (err) {
-                showNotification('Senha incorreta ou arquivo inválido!', 'error');
-                decryptResult.style.display = 'none';
-            }
-        };
-
-        // Upload
         uploadArea.onclick = () => fileInput.click();
         fileInput.onchange = (e) => {
             if (e.target.files.length) {
@@ -411,20 +270,11 @@
             fileInput.value = '';
         };
         
-        // Drag & drop
-        uploadArea.ondragover = (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#667eea';
-            uploadArea.style.background = '#f0eef9';
-        };
-        uploadArea.ondragleave = () => {
-            uploadArea.style.borderColor = '#ddd';
-            uploadArea.style.background = '#f9f9f9';
-        };
+        uploadArea.ondragover = (e) => { e.preventDefault(); uploadArea.style.borderColor = '#667eea'; };
+        uploadArea.ondragleave = () => { uploadArea.style.borderColor = '#ddd'; };
         uploadArea.ondrop = (e) => {
             e.preventDefault();
             uploadArea.style.borderColor = '#ddd';
-            uploadArea.style.background = '#f9f9f9';
             const files = Array.from(e.dataTransfer.files);
             if (files.length) {
                 selectedFiles.push(...files);
@@ -433,7 +283,6 @@
             }
         };
         
-        // Senha
         togglePasswordBtn.onclick = () => {
             const type = passwordInput.type === 'password' ? 'text' : 'password';
             passwordInput.type = type;
@@ -443,9 +292,7 @@
             passwordInput.value = generateRandomPassword();
             showNotification('Senha gerada!');
         };
-        compactBtn.onclick = encryptFiles;
-        
-        console.log('✅ App pronto! Arquivos serão criptografados com AES-256');
+        compactBtn.onclick = createZip;
     </script>
 </body>
 </html>
