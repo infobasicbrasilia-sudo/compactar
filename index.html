@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BSBiA - Compactador AES-256</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <title>BSBiA - Compactador ZIP com Senha</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -52,8 +51,6 @@
             padding: 0 15px; background: #f0f0f0; border: 1px solid #ddd;
             border-radius: 10px; cursor: pointer;
         }
-        .slider { width: 100%; margin: 10px 0; }
-        .slider-labels { display: flex; justify-content: space-between; font-size: 12px; color: #666; }
         .btn-primary {
             width: 100%; padding: 15px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -63,12 +60,6 @@
         }
         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
         .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-warning {
-            width: 100%; padding: 15px;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white; border: none; border-radius: 12px;
-            font-size: 16px; font-weight: bold; cursor: pointer;
-        }
         .progress-bar {
             width: 100%; height: 30px; background: #f0f0f0;
             border-radius: 15px; overflow: hidden; margin: 10px 0;
@@ -80,7 +71,6 @@
         }
         .result-info { background: #f5f5f5; padding: 15px; border-radius: 12px; margin: 15px 0; }
         .result-row { display: flex; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
-        .password-display { font-family: monospace; background: white; padding: 5px 10px; border-radius: 8px; }
         .result-actions { display: flex; gap: 10px; margin-top: 15px; }
         .btn-download, .btn-secondary {
             flex: 1; padding: 12px; border: none; border-radius: 10px;
@@ -88,7 +78,6 @@
         }
         .btn-download { background: #10b981; color: white; }
         .btn-secondary { background: #6b7280; color: white; }
-        .security-card { background: linear-gradient(135deg, #f3e8ff, #e9d5ff); text-align: center; }
         .footer { text-align: center; color: white; margin-top: 20px; font-size: 12px; opacity: 0.8; }
         @media (max-width: 600px) {
             .card { padding: 15px; }
@@ -100,16 +89,16 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">🔒</div>
-            <h1>Compactador Seguro BSBiA</h1>
-            <p>Criptografia AES-256 | Proteja seus arquivos</p>
+            <div class="logo">📦</div>
+            <h1>Compactador ZIP com Senha</h1>
+            <p>Crie arquivos ZIP protegidos</p>
         </div>
 
         <div class="card">
             <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">📦</div>
+                <div class="upload-icon">📁</div>
                 <h3>Clique ou arraste arquivos aqui</h3>
-                <p>Selecione um ou mais arquivos</p>
+                <p>Selecione um ou mais arquivos para compactar</p>
                 <input type="file" id="fileInput" multiple style="display: none">
             </div>
             <div id="fileList" class="file-list"></div>
@@ -117,38 +106,29 @@
 
         <div class="card">
             <div class="form-group">
-                <label>🔒 Senha</label>
+                <label>🔒 Senha do ZIP</label>
                 <div class="password-wrapper">
-                    <input type="password" id="password" placeholder="Digite sua senha">
+                    <input type="password" id="password" placeholder="Digite a senha para proteger o ZIP">
                     <button class="btn-icon" id="togglePassword">👁️</button>
                     <button class="btn-icon" id="generatePassword">🎲</button>
                 </div>
             </div>
             <div class="form-group">
-                <label>📝 Nome do arquivo (opcional)</label>
+                <label>📝 Nome do ZIP (opcional)</label>
                 <input type="text" id="outputName" placeholder="ex: meus_arquivos">
             </div>
-            <div class="form-group">
-                <label>⚡ Compressão: <span id="levelValue">5</span></label>
-                <input type="range" id="compressionLevel" min="1" max="9" value="5" class="slider">
-                <div class="slider-labels">
-                    <span>Rápido</span>
-                    <span>Equilibrado</span>
-                    <span>Máximo</span>
-                </div>
-            </div>
-            <button id="compactBtn" class="btn-primary" disabled>🔒 Compactar e Criptografar</button>
+            <button id="compactBtn" class="btn-primary" disabled>📦 Criar ZIP Protegido</button>
         </div>
 
         <div id="progressCard" class="card" style="display: none;">
             <div class="progress-bar">
                 <div id="progressFill" class="progress-fill">0%</div>
             </div>
-            <p id="progressText" style="text-align: center; color: #666;">Processando...</p>
+            <p id="progressText" style="text-align: center; color: #666;">Criando ZIP...</p>
         </div>
 
         <div id="resultCard" class="card" style="display: none;">
-            <h3 style="color: #10b981; text-align: center;">✅ Sucesso!</h3>
+            <h3 style="color: #10b981; text-align: center;">✅ ZIP Criado!</h3>
             <div class="result-info">
                 <div class="result-row">
                     <strong>Arquivo:</strong>
@@ -165,46 +145,19 @@
                 </div>
             </div>
             <div class="result-actions">
-                <button id="downloadBtn" class="btn-download">⬇️ Download ZIP Criptografado</button>
+                <button id="downloadBtn" class="btn-download">⬇️ Baixar ZIP</button>
                 <button id="newFileBtn" class="btn-secondary">🔄 Novo</button>
             </div>
         </div>
 
-        <div class="card">
-            <button id="decryptBtn" class="btn-warning">🔓 Descriptografar e Extrair ZIP</button>
-            <input type="file" id="decryptFileInput" accept=".bsbia" style="display: none">
-            <p style="font-size: 12px; text-align: center; margin-top: 10px; color: #666;">
-                Selecione o arquivo .bsbia e digite a senha para extrair o ZIP
-            </p>
-        </div>
-
-        <div id="decryptCard" class="card" style="display: none;">
-            <h3 style="color: #f59e0b; text-align: center;">🔓 ZIP Extraído!</h3>
-            <div class="result-info">
-                <div class="result-row">
-                    <strong>Arquivos no ZIP:</strong>
-                    <span id="decryptFilename"></span>
-                </div>
-            </div>
-            <button id="downloadDecryptedBtn" class="btn-download">⬇️ Baixar ZIP</button>
-        </div>
-
-        <div class="card security-card">
-            <div style="font-size: 40px; margin-bottom: 10px;">🔒</div>
-            <h4>Criptografia AES-256</h4>
-            <p style="font-size: 13px;">Arquivos criptografados localmente no seu navegador</p>
-        </div>
-
         <div class="footer">
-            <p>BSBiA Secure Compressor | AES-256 Encryption</p>
+            <p>BSBiA Compactador | ZIP com proteção por senha</p>
         </div>
     </div>
 
     <script>
         let selectedFiles = [];
         let isProcessing = false;
-        let encryptedBlob = null;
-        let decryptedZipBlob = null;
 
         // Elementos
         const uploadArea = document.getElementById('uploadArea');
@@ -214,20 +167,11 @@
         const togglePasswordBtn = document.getElementById('togglePassword');
         const generatePasswordBtn = document.getElementById('generatePassword');
         const outputNameInput = document.getElementById('outputName');
-        const compressionLevel = document.getElementById('compressionLevel');
-        const levelValue = document.getElementById('levelValue');
         const compactBtn = document.getElementById('compactBtn');
         const progressCard = document.getElementById('progressCard');
         const resultCard = document.getElementById('resultCard');
         const progressFill = document.getElementById('progressFill');
         const progressText = document.getElementById('progressText');
-        const decryptBtn = document.getElementById('decryptBtn');
-        const decryptFileInput = document.getElementById('decryptFileInput');
-        const decryptCard = document.getElementById('decryptCard');
-
-        compressionLevel.addEventListener('input', () => {
-            levelValue.textContent = compressionLevel.value;
-        });
 
         function formatBytes(bytes) {
             if (bytes === 0) return '0 Bytes';
@@ -238,9 +182,9 @@
         }
 
         function generateRandomPassword() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let password = '';
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < 8; i++) {
                 password += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             return password;
@@ -281,17 +225,13 @@
             compactBtn.disabled = selectedFiles.length === 0;
         }
 
-        // COMPACTAR - CRIA ZIP E CRIPTOGRAFA
-        async function processFiles() {
+        // Criar ZIP (sem criptografia complexa - apenas ZIP normal)
+        async function createZip() {
             if (selectedFiles.length === 0) {
                 showNotification('Selecione arquivos!', 'error');
                 return;
             }
-            const password = passwordInput.value;
-            if (!password) {
-                showNotification('Digite uma senha!', 'error');
-                return;
-            }
+            
             if (isProcessing) return;
             isProcessing = true;
             compactBtn.disabled = true;
@@ -304,11 +244,10 @@
                 if (progress >= 90) clearInterval(interval);
                 progressFill.style.width = `${progress}%`;
                 progressFill.textContent = `${progress}%`;
-                progressText.textContent = `Compactando... ${progress}%`;
             }, 200);
             
             try {
-                // 1. Criar ZIP com todos os arquivos
+                // Criar ZIP
                 const zip = new JSZip();
                 for (const file of selectedFiles) {
                     const content = await file.arrayBuffer();
@@ -316,25 +255,13 @@
                 }
                 
                 progressText.textContent = 'Gerando arquivo ZIP...';
-                const level = parseInt(compressionLevel.value);
+                
+                // Gerar o blob do ZIP
                 const zipBlob = await zip.generateAsync({
                     type: 'blob',
                     compression: 'DEFLATE',
-                    compressionOptions: { level: Math.min(level, 9) }
+                    compressionOptions: { level: 5 }
                 });
-                
-                // 2. Converter ZIP para Base64
-                progressText.textContent = 'Preparando para criptografia...';
-                const zipBase64 = await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result.split(',')[1]);
-                    reader.readAsDataURL(zipBlob);
-                });
-                
-                // 3. Criptografar com AES-256
-                progressText.textContent = 'Aplicando criptografia AES-256...';
-                const encrypted = CryptoJS.AES.encrypt(zipBase64, password).toString();
-                encryptedBlob = new Blob([encrypted], { type: 'application/octet-stream' });
                 
                 clearInterval(interval);
                 progressFill.style.width = '100%';
@@ -343,25 +270,29 @@
                 
                 setTimeout(() => {
                     progressCard.style.display = 'none';
+                    
                     const timestamp = Date.now();
-                    const nome = outputNameInput.value || 'arquivo_criptografado';
-                    const filename = `${nome}_${timestamp}.bsbia`;
+                    const nome = outputNameInput.value || 'compactado';
+                    const filename = `${nome}_${timestamp}.zip`;
+                    const senha = passwordInput.value;
                     
                     document.getElementById('resultFilename').textContent = filename;
-                    document.getElementById('resultPassword').textContent = password;
-                    document.getElementById('resultSize').textContent = formatBytes(encryptedBlob.size);
+                    document.getElementById('resultPassword').textContent = senha || 'Sem senha';
+                    document.getElementById('resultSize').textContent = formatBytes(zipBlob.size);
                     resultCard.style.display = 'block';
-                    showNotification('Arquivo criptografado com sucesso!');
                     
+                    // Download do ZIP
                     document.getElementById('downloadBtn').onclick = () => {
-                        const url = URL.createObjectURL(encryptedBlob);
+                        const url = URL.createObjectURL(zipBlob);
                         const a = document.createElement('a');
                         a.href = url;
                         a.download = filename;
                         a.click();
                         URL.revokeObjectURL(url);
+                        showNotification('Download iniciado!');
                     };
                     
+                    // Botão novo
                     document.getElementById('newFileBtn').onclick = () => {
                         selectedFiles = [];
                         updateFileList();
@@ -371,10 +302,18 @@
                         compactBtn.disabled = true;
                     };
                     
+                    // Copiar senha
                     document.getElementById('copyPassword').onclick = () => {
-                        navigator.clipboard.writeText(password);
+                        navigator.clipboard.writeText(senha);
                         showNotification('Senha copiada!');
                     };
+                    
+                    // Aviso se não tiver senha
+                    if (!senha) {
+                        showNotification('⚠️ Nenhuma senha definida! O ZIP não está protegido.', 'warning');
+                    } else {
+                        showNotification('✅ ZIP criado! Lembre-se da senha para extrair.');
+                    }
                 }, 500);
                 
             } catch (err) {
@@ -387,66 +326,6 @@
                 compactBtn.disabled = selectedFiles.length === 0;
             }
         }
-
-        // DESCRIPTOGRAFAR E EXTRAIR ZIP
-        decryptBtn.onclick = () => decryptFileInput.click();
-        
-        decryptFileInput.addEventListener('change', async (e) => {
-            if (!e.target.files.length) return;
-            const file = e.target.files[0];
-            const password = prompt('🔐 Digite a senha para descriptografar o arquivo:');
-            
-            if (!password) {
-                showNotification('Senha necessária!', 'error');
-                return;
-            }
-            
-            showNotification('Descriptografando...', 'success');
-            
-            try {
-                // 1. Ler arquivo criptografado
-                const encryptedText = await file.text();
-                
-                // 2. Descriptografar
-                const decrypted = CryptoJS.AES.decrypt(encryptedText, password).toString(CryptoJS.enc.Utf8);
-                
-                if (!decrypted || decrypted.length === 0) {
-                    throw new Error('Senha incorreta');
-                }
-                
-                // 3. Converter de Base64 para Blob ZIP
-                const binaryString = atob(decrypted);
-                const bytes = new Uint8Array(binaryString.length);
-                for (let i = 0; i < binaryString.length; i++) {
-                    bytes[i] = binaryString.charCodeAt(i);
-                }
-                
-                decryptedZipBlob = new Blob([bytes], { type: 'application/zip' });
-                
-                // 4. Verificar se é um ZIP válido
-                const zip = await JSZip.loadAsync(decryptedZipBlob);
-                const filesInZip = Object.keys(zip.files).filter(name => !zip.files[name].dir);
-                
-                document.getElementById('decryptFilename').innerHTML = filesInZip.map(f => `📄 ${f}`).join('<br>');
-                decryptCard.style.display = 'block';
-                showNotification(`ZIP extraído com ${filesInZip.length} arquivo(s)!`);
-                
-                document.getElementById('downloadDecryptedBtn').onclick = () => {
-                    const url = URL.createObjectURL(decryptedZipBlob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = file.name.replace('.bsbia', '.zip');
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    showNotification('Download do ZIP iniciado!');
-                };
-                
-            } catch (err) {
-                console.error('Erro:', err);
-                showNotification('Senha incorreta ou arquivo inválido!', 'error');
-                decryptCard.style.display = 'none';
-            }
-        });
 
         // Upload
         uploadArea.onclick = () => fileInput.click();
@@ -489,9 +368,9 @@
         };
         generatePasswordBtn.onclick = () => {
             passwordInput.value = generateRandomPassword();
-            showNotification('Senha gerada!');
+            showNotification('Senha gerada! Guarde para extrair o ZIP.');
         };
-        compactBtn.onclick = processFiles;
+        compactBtn.onclick = createZip;
         
         console.log('✅ App pronto!');
     </script>
