@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BSBiA - Compactador AES-256</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         * {
@@ -392,6 +393,14 @@
     </div>
 
     <script>
+        // Verificar se as bibliotecas carregaram
+        if (typeof CryptoJS === 'undefined') {
+            alert('Erro: Biblioteca CryptoJS não carregou. Recarregue a página.');
+        }
+        if (typeof JSZip === 'undefined') {
+            alert('Erro: Biblioteca JSZip não carregou. Recarregue a página.');
+        }
+
         // Estado
         let selectedFiles = [];
         let isProcessing = false;
@@ -494,9 +503,6 @@
             progressCard.style.display = 'block';
             resultCard.style.display = 'none';
             
-            let originalSize = 0;
-            selectedFiles.forEach(f => originalSize += f.size);
-            
             let progress = 0;
             const interval = setInterval(() => {
                 progress += 10;
@@ -525,13 +531,14 @@
                 progressText.textContent = 'Criptografando AES-256...';
                 
                 // Ler ZIP como base64
-                const zipBase64 = await new Promise((resolve) => {
+                const zipBase64 = await new Promise((resolve, reject) => {
                     const reader = new FileReader();
                     reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
                     reader.readAsDataURL(zipBlob);
                 });
                 
-                // Criptografar
+                // Criptografar com AES
                 const encrypted = CryptoJS.AES.encrypt(zipBase64, password).toString();
                 encryptedBlob = new Blob([encrypted], { type: 'application/octet-stream' });
                 
@@ -577,6 +584,7 @@
                 }, 500);
                 
             } catch (err) {
+                console.error('Erro:', err);
                 clearInterval(interval);
                 progressCard.style.display = 'none';
                 showNotification('Erro: ' + err.message, 'error');
@@ -592,20 +600,31 @@
         decryptFileInput.addEventListener('change', async (e) => {
             if (!e.target.files.length) return;
             const file = e.target.files[0];
-            const password = prompt('🔐 Digite a senha:');
+            const password = prompt('🔐 Digite a senha para descriptografar:');
             if (!password) {
                 showNotification('Senha necessária!', 'error');
                 return;
             }
             showNotification('Descriptografando...', 'success');
             try {
-                const encrypted = await file.text();
-                const decrypted = CryptoJS.AES.decrypt(encrypted, password).toString(CryptoJS.enc.Utf8);
-                if (!decrypted) throw new Error('Senha incorreta');
+                const encryptedText = await file.text();
+                const decrypted = CryptoJS.AES.decrypt(encryptedText, password).toString(CryptoJS.enc.Utf8);
                 
-                const binary = atob(decrypted.split(',')[1] || decrypted);
-                const bytes = new Uint8Array(binary.length);
-                for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                if (!decrypted || decrypted.length === 0) {
+                    throw new Error('Senha incorreta');
+                }
+                
+                // Converter base64 para blob
+                let base64Data = decrypted;
+                if (base64Data.includes(',')) {
+                    base64Data = base64Data.split(',')[1];
+                }
+                
+                const binaryString = atob(base64Data);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
                 
                 const zipBlob = new Blob([bytes], { type: 'application/zip' });
                 const zip = await JSZip.loadAsync(zipBlob);
@@ -623,9 +642,10 @@
                     a.click();
                     URL.revokeObjectURL(url);
                 };
-                showNotification('Descriptografado!');
+                showNotification('Descriptografado com sucesso!');
             } catch (err) {
-                showNotification('Senha incorreta!', 'error');
+                console.error('Erro:', err);
+                showNotification('Senha incorreta ou arquivo inválido!', 'error');
                 decryptCard.style.display = 'none';
             }
         });
@@ -675,7 +695,10 @@
         };
         compactBtn.onclick = processFiles;
         
-        console.log('✅ App pronto!');
+        console.log('✅ App pronto! Bibliotecas carregadas:', {
+            CryptoJS: typeof CryptoJS !== 'undefined',
+            JSZip: typeof JSZip !== 'undefined'
+        });
     </script>
 </body>
 </html>
