@@ -2,12 +2,12 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>BSBiA - Compactador Seguro AES-256</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app">
@@ -16,7 +16,7 @@
                 <div class="logo">BSBiA</div>
                 <div>
                     <h1>Compactador Seguro AES-256</h1>
-                    <p>Criptografia real | Funciona offline | 100% JavaScript</p>
+                    <p>Criptografia militar | Funciona offline | 100% JavaScript</p>
                 </div>
             </div>
         </header>
@@ -42,11 +42,8 @@
                         <label>🔒 Senha de Proteção (AES-256)</label>
                         <div class="password-wrapper">
                             <input type="password" id="password" placeholder="Digite sua senha" class="input">
-                            <!-- Adicione data-tooltip aos botões -->
-<button class="btn-icon" id="togglePassword" data-tooltip="Mostrar/ocultar senha">👁️</button>
-<button class="btn-icon" id="generatePassword" data-tooltip="Gerar senha aleatória">🎲</button>
-
-<!-- Adicione classe loading dinamicamente via JS quando estiver processando -->
+                            <button class="btn-icon" id="togglePassword">👁️</button>
+                            <button class="btn-icon" id="generatePassword">🎲</button>
                         </div>
                     </div>
 
@@ -56,7 +53,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>⚡ Nível de Compressão</label>
+                        <label>⚡ Nível de Compressão: <span id="levelValue">5</span></label>
                         <input type="range" id="compressionLevel" min="1" max="9" value="5" class="slider">
                         <div class="slider-labels">
                             <span>Mais Rápido</span>
@@ -114,13 +111,41 @@
                     </div>
                 </div>
 
-                <!-- Aviso de Segurança -->
+                <!-- Botão Descriptografar -->
+                <div class="card">
+                    <button id="decryptBtn" class="btn-warning">
+                        🔓 Descriptografar Arquivo .bsbia
+                    </button>
+                    <p style="font-size: 0.75rem; text-align: center; margin-top: 12px; color: #666;">
+                        Selecione um arquivo .bsbia para descriptografar
+                    </p>
+                    <input type="file" id="decryptFileInput" accept=".bsbia" style="display: none">
+                </div>
+
+                <!-- Resultado Descriptografia -->
+                <div id="decryptCard" class="card" style="display: none;">
+                    <div class="result-header">
+                        <span class="result-icon">🔓</span>
+                        <h3>Arquivo Descriptografado!</h3>
+                    </div>
+                    <div class="result-info">
+                        <div class="result-row">
+                            <strong>Arquivo:</strong>
+                            <span id="decryptFilename"></span>
+                        </div>
+                    </div>
+                    <div class="result-actions">
+                        <button id="downloadDecryptedBtn" class="btn-download">⬇️ Download</button>
+                    </div>
+                </div>
+
+                <!-- Security Info -->
                 <div class="card security-card">
                     <div class="security-info">
                         <span class="security-icon">🔒</span>
                         <div>
                             <h4>Criptografia AES-256</h4>
-                            <p>Seus arquivos são criptografados localmente no seu navegador. Nenhum dado é enviado para servidores.</p>
+                            <p>Seus arquivos são criptografados localmente no seu navegador.</p>
                         </div>
                     </div>
                 </div>
@@ -128,10 +153,10 @@
         </main>
 
         <footer class="footer">
-            <p>🔒 BSBiA Secure Compressor | Criptografia AES-256 | 100% JavaScript</p>
+            <p>🔒 BSBiA Secure Compressor | AES-256 | 100% JavaScript</p>
         </footer>
     </div>
 
-    <script src="js/app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
