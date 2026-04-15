@@ -7,276 +7,93 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-        }
-
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; color: white; margin-bottom: 30px; }
         .logo {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
+            width: 60px; height: 60px; background: white; border-radius: 15px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 15px; font-size: 24px; font-weight: bold; color: #667eea;
         }
-
-        .header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            opacity: 0.9;
-        }
-
+        .header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+        .header p { opacity: 0.9; }
         .card {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: white; border-radius: 20px; padding: 25px;
+            margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-
         .upload-area {
-            border: 2px dashed #ddd;
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
+            border: 2px dashed #ddd; border-radius: 15px; padding: 40px;
+            text-align: center; cursor: pointer; transition: all 0.3s;
             background: #f9f9f9;
         }
-
-        .upload-area:hover {
-            border-color: #667eea;
-            background: #f0eef9;
-        }
-
-        .upload-icon {
-            font-size: 50px;
-            margin-bottom: 10px;
-        }
-
-        .file-list {
-            margin-top: 15px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
+        .upload-area:hover { border-color: #667eea; background: #f0eef9; }
+        .upload-icon { font-size: 50px; margin-bottom: 10px; }
+        .file-list { margin-top: 15px; max-height: 200px; overflow-y: auto; }
         .file-item {
-            background: #f5f5f5;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
+            background: #f5f5f5; padding: 10px; margin-bottom: 8px;
+            border-radius: 10px; display: flex; justify-content: space-between;
             align-items: center;
         }
-
-        .remove-file {
-            color: red;
-            cursor: pointer;
-            font-weight: bold;
-            padding: 0 10px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .password-wrapper {
-            display: flex;
-            gap: 10px;
-        }
-
+        .remove-file { color: red; cursor: pointer; font-weight: bold; padding: 0 10px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #333; }
+        .password-wrapper { display: flex; gap: 10px; }
         input[type="password"], input[type="text"] {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 14px;
+            flex: 1; padding: 12px; border: 1px solid #ddd;
+            border-radius: 10px; font-size: 14px;
         }
-
         .btn-icon {
-            padding: 0 15px;
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            cursor: pointer;
+            padding: 0 15px; background: #f0f0f0; border: 1px solid #ddd;
+            border-radius: 10px; cursor: pointer;
         }
-
-        .slider {
-            width: 100%;
-            margin: 10px 0;
-        }
-
-        .slider-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #666;
-        }
-
+        .slider { width: 100%; margin: 10px 0; }
+        .slider-labels { display: flex; justify-content: space-between; font-size: 12px; color: #666; }
         .btn-primary {
-            width: 100%;
-            padding: 15px;
+            width: 100%; padding: 15px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
+            color: white; border: none; border-radius: 12px;
+            font-size: 16px; font-weight: bold; cursor: pointer;
             transition: transform 0.2s;
         }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-warning {
-            width: 100%;
-            padding: 15px;
+            width: 100%; padding: 15px;
             background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
+            color: white; border: none; border-radius: 12px;
+            font-size: 16px; font-weight: bold; cursor: pointer;
         }
-
         .progress-bar {
-            width: 100%;
-            height: 30px;
-            background: #f0f0f0;
-            border-radius: 15px;
-            overflow: hidden;
-            margin: 10px 0;
+            width: 100%; height: 30px; background: #f0f0f0;
+            border-radius: 15px; overflow: hidden; margin: 10px 0;
         }
-
         .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 12px;
+            width: 0%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s; display: flex; align-items: center;
+            justify-content: center; color: white; font-size: 12px;
         }
-
-        .result-info {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 12px;
-            margin: 15px 0;
-        }
-
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .password-display {
-            font-family: monospace;
-            background: white;
-            padding: 5px 10px;
-            border-radius: 8px;
-        }
-
-        .result-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
+        .result-info { background: #f5f5f5; padding: 15px; border-radius: 12px; margin: 15px 0; }
+        .result-row { display: flex; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+        .password-display { font-family: monospace; background: white; padding: 5px 10px; border-radius: 8px; }
+        .result-actions { display: flex; gap: 10px; margin-top: 15px; }
         .btn-download, .btn-secondary {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
+            flex: 1; padding: 12px; border: none; border-radius: 10px;
+            font-weight: bold; cursor: pointer;
         }
-
-        .btn-download {
-            background: #10b981;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #6b7280;
-            color: white;
-        }
-
-        .security-card {
-            background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
-            text-align: center;
-        }
-
-        .footer {
-            text-align: center;
-            color: white;
-            margin-top: 20px;
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
+        .btn-download { background: #10b981; color: white; }
+        .btn-secondary { background: #6b7280; color: white; }
+        .security-card { background: linear-gradient(135deg, #f3e8ff, #e9d5ff); text-align: center; }
+        .footer { text-align: center; color: white; margin-top: 20px; font-size: 12px; opacity: 0.8; }
         @media (max-width: 600px) {
-            .container {
-                padding: 0;
-            }
-            .card {
-                padding: 15px;
-            }
-            .result-row {
-                flex-direction: column;
-            }
-            .result-actions {
-                flex-direction: column;
-            }
+            .card { padding: 15px; }
+            .result-row { flex-direction: column; }
+            .result-actions { flex-direction: column; }
         }
     </style>
 </head>
@@ -288,7 +105,6 @@
             <p>Criptografia AES-256 | Proteja seus arquivos</p>
         </div>
 
-        <!-- Upload -->
         <div class="card">
             <div class="upload-area" id="uploadArea">
                 <div class="upload-icon">📦</div>
@@ -299,7 +115,6 @@
             <div id="fileList" class="file-list"></div>
         </div>
 
-        <!-- Configurações -->
         <div class="card">
             <div class="form-group">
                 <label>🔒 Senha</label>
@@ -309,12 +124,10 @@
                     <button class="btn-icon" id="generatePassword">🎲</button>
                 </div>
             </div>
-
             <div class="form-group">
                 <label>📝 Nome do arquivo (opcional)</label>
                 <input type="text" id="outputName" placeholder="ex: meus_arquivos">
             </div>
-
             <div class="form-group">
                 <label>⚡ Compressão: <span id="levelValue">5</span></label>
                 <input type="range" id="compressionLevel" min="1" max="9" value="5" class="slider">
@@ -324,11 +137,9 @@
                     <span>Máximo</span>
                 </div>
             </div>
-
             <button id="compactBtn" class="btn-primary" disabled>🔒 Compactar e Criptografar</button>
         </div>
 
-        <!-- Progresso -->
         <div id="progressCard" class="card" style="display: none;">
             <div class="progress-bar">
                 <div id="progressFill" class="progress-fill">0%</div>
@@ -336,7 +147,6 @@
             <p id="progressText" style="text-align: center; color: #666;">Processando...</p>
         </div>
 
-        <!-- Resultado -->
         <div id="resultCard" class="card" style="display: none;">
             <h3 style="color: #10b981; text-align: center;">✅ Sucesso!</h3>
             <div class="result-info">
@@ -355,32 +165,30 @@
                 </div>
             </div>
             <div class="result-actions">
-                <button id="downloadBtn" class="btn-download">⬇️ Download</button>
+                <button id="downloadBtn" class="btn-download">⬇️ Download ZIP Criptografado</button>
                 <button id="newFileBtn" class="btn-secondary">🔄 Novo</button>
             </div>
         </div>
 
-        <!-- Descriptografar -->
         <div class="card">
-            <button id="decryptBtn" class="btn-warning">🔓 Descriptografar arquivo .bsbia</button>
+            <button id="decryptBtn" class="btn-warning">🔓 Descriptografar e Extrair ZIP</button>
             <input type="file" id="decryptFileInput" accept=".bsbia" style="display: none">
             <p style="font-size: 12px; text-align: center; margin-top: 10px; color: #666;">
-                Selecione um arquivo .bsbia para descriptografar
+                Selecione o arquivo .bsbia e digite a senha para extrair o ZIP
             </p>
         </div>
 
         <div id="decryptCard" class="card" style="display: none;">
-            <h3 style="color: #f59e0b; text-align: center;">🔓 Descriptografado!</h3>
+            <h3 style="color: #f59e0b; text-align: center;">🔓 ZIP Extraído!</h3>
             <div class="result-info">
                 <div class="result-row">
-                    <strong>Arquivo:</strong>
+                    <strong>Arquivos no ZIP:</strong>
                     <span id="decryptFilename"></span>
                 </div>
             </div>
-            <button id="downloadDecryptedBtn" class="btn-download">⬇️ Download</button>
+            <button id="downloadDecryptedBtn" class="btn-download">⬇️ Baixar ZIP</button>
         </div>
 
-        <!-- Security -->
         <div class="card security-card">
             <div style="font-size: 40px; margin-bottom: 10px;">🔒</div>
             <h4>Criptografia AES-256</h4>
@@ -393,18 +201,10 @@
     </div>
 
     <script>
-        // Verificar se as bibliotecas carregaram
-        if (typeof CryptoJS === 'undefined') {
-            alert('Erro: Biblioteca CryptoJS não carregou. Recarregue a página.');
-        }
-        if (typeof JSZip === 'undefined') {
-            alert('Erro: Biblioteca JSZip não carregou. Recarregue a página.');
-        }
-
-        // Estado
         let selectedFiles = [];
         let isProcessing = false;
         let encryptedBlob = null;
+        let decryptedZipBlob = null;
 
         // Elementos
         const uploadArea = document.getElementById('uploadArea');
@@ -425,12 +225,10 @@
         const decryptFileInput = document.getElementById('decryptFileInput');
         const decryptCard = document.getElementById('decryptCard');
 
-        // Nível de compressão
         compressionLevel.addEventListener('input', () => {
             levelValue.textContent = compressionLevel.value;
         });
 
-        // Formatar bytes
         function formatBytes(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -439,7 +237,6 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        // Gerar senha
         function generateRandomPassword() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
             let password = '';
@@ -449,7 +246,6 @@
             return password;
         }
 
-        // Notificação
         function showNotification(msg, type = 'success') {
             const div = document.createElement('div');
             div.textContent = msg;
@@ -463,7 +259,6 @@
             setTimeout(() => div.remove(), 3000);
         }
 
-        // Atualizar lista
         function updateFileList() {
             if (selectedFiles.length === 0) {
                 fileList.innerHTML = '';
@@ -486,7 +281,7 @@
             compactBtn.disabled = selectedFiles.length === 0;
         }
 
-        // COMPACTAR
+        // COMPACTAR - CRIA ZIP E CRIPTOGRAFA
         async function processFiles() {
             if (selectedFiles.length === 0) {
                 showNotification('Selecione arquivos!', 'error');
@@ -513,14 +308,14 @@
             }, 200);
             
             try {
-                // Criar ZIP
+                // 1. Criar ZIP com todos os arquivos
                 const zip = new JSZip();
                 for (const file of selectedFiles) {
                     const content = await file.arrayBuffer();
                     zip.file(file.name, content);
                 }
                 
-                progressText.textContent = 'Gerando ZIP...';
+                progressText.textContent = 'Gerando arquivo ZIP...';
                 const level = parseInt(compressionLevel.value);
                 const zipBlob = await zip.generateAsync({
                     type: 'blob',
@@ -528,17 +323,16 @@
                     compressionOptions: { level: Math.min(level, 9) }
                 });
                 
-                progressText.textContent = 'Criptografando AES-256...';
-                
-                // Ler ZIP como base64
-                const zipBase64 = await new Promise((resolve, reject) => {
+                // 2. Converter ZIP para Base64
+                progressText.textContent = 'Preparando para criptografia...';
+                const zipBase64 = await new Promise((resolve) => {
                     const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = reject;
+                    reader.onload = () => resolve(reader.result.split(',')[1]);
                     reader.readAsDataURL(zipBlob);
                 });
                 
-                // Criptografar com AES
+                // 3. Criptografar com AES-256
+                progressText.textContent = 'Aplicando criptografia AES-256...';
                 const encrypted = CryptoJS.AES.encrypt(zipBase64, password).toString();
                 encryptedBlob = new Blob([encrypted], { type: 'application/octet-stream' });
                 
@@ -557,7 +351,7 @@
                     document.getElementById('resultPassword').textContent = password;
                     document.getElementById('resultSize').textContent = formatBytes(encryptedBlob.size);
                     resultCard.style.display = 'block';
-                    showNotification('Arquivo criptografado!');
+                    showNotification('Arquivo criptografado com sucesso!');
                     
                     document.getElementById('downloadBtn').onclick = () => {
                         const url = URL.createObjectURL(encryptedBlob);
@@ -594,55 +388,59 @@
             }
         }
 
-        // DESCRIPTOGRAFAR
+        // DESCRIPTOGRAFAR E EXTRAIR ZIP
         decryptBtn.onclick = () => decryptFileInput.click();
         
         decryptFileInput.addEventListener('change', async (e) => {
             if (!e.target.files.length) return;
             const file = e.target.files[0];
-            const password = prompt('🔐 Digite a senha para descriptografar:');
+            const password = prompt('🔐 Digite a senha para descriptografar o arquivo:');
+            
             if (!password) {
                 showNotification('Senha necessária!', 'error');
                 return;
             }
+            
             showNotification('Descriptografando...', 'success');
+            
             try {
+                // 1. Ler arquivo criptografado
                 const encryptedText = await file.text();
+                
+                // 2. Descriptografar
                 const decrypted = CryptoJS.AES.decrypt(encryptedText, password).toString(CryptoJS.enc.Utf8);
                 
                 if (!decrypted || decrypted.length === 0) {
                     throw new Error('Senha incorreta');
                 }
                 
-                // Converter base64 para blob
-                let base64Data = decrypted;
-                if (base64Data.includes(',')) {
-                    base64Data = base64Data.split(',')[1];
-                }
-                
-                const binaryString = atob(base64Data);
+                // 3. Converter de Base64 para Blob ZIP
+                const binaryString = atob(decrypted);
                 const bytes = new Uint8Array(binaryString.length);
                 for (let i = 0; i < binaryString.length; i++) {
                     bytes[i] = binaryString.charCodeAt(i);
                 }
                 
-                const zipBlob = new Blob([bytes], { type: 'application/zip' });
-                const zip = await JSZip.loadAsync(zipBlob);
-                const firstFile = Object.keys(zip.files)[0];
-                const content = await zip.files[firstFile].async('blob');
+                decryptedZipBlob = new Blob([bytes], { type: 'application/zip' });
                 
-                document.getElementById('decryptFilename').textContent = firstFile;
+                // 4. Verificar se é um ZIP válido
+                const zip = await JSZip.loadAsync(decryptedZipBlob);
+                const filesInZip = Object.keys(zip.files).filter(name => !zip.files[name].dir);
+                
+                document.getElementById('decryptFilename').innerHTML = filesInZip.map(f => `📄 ${f}`).join('<br>');
                 decryptCard.style.display = 'block';
+                showNotification(`ZIP extraído com ${filesInZip.length} arquivo(s)!`);
                 
                 document.getElementById('downloadDecryptedBtn').onclick = () => {
-                    const url = URL.createObjectURL(content);
+                    const url = URL.createObjectURL(decryptedZipBlob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = firstFile;
+                    a.download = file.name.replace('.bsbia', '.zip');
                     a.click();
                     URL.revokeObjectURL(url);
+                    showNotification('Download do ZIP iniciado!');
                 };
-                showNotification('Descriptografado com sucesso!');
+                
             } catch (err) {
                 console.error('Erro:', err);
                 showNotification('Senha incorreta ou arquivo inválido!', 'error');
@@ -695,10 +493,7 @@
         };
         compactBtn.onclick = processFiles;
         
-        console.log('✅ App pronto! Bibliotecas carregadas:', {
-            CryptoJS: typeof CryptoJS !== 'undefined',
-            JSZip: typeof JSZip !== 'undefined'
-        });
+        console.log('✅ App pronto!');
     </script>
 </body>
 </html>
