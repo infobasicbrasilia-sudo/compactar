@@ -1,0 +1,5 @@
+executar o program
+
+vai rodar neste endereço: http://localhost:5000/
+
+----> Comando: python app.py
