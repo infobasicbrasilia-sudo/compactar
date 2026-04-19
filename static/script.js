@@ -116,3 +116,4 @@ compactBtn.onclick = async () => {
 
     xhr.send(formData);
 };
+
